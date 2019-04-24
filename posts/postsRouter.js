@@ -66,9 +66,9 @@ postsRouter.put('/:id', (req, res) => {
     const { id } = req.params;
     const { text, user_id } = req.body;
 
-    const message400 = { error: "Please provide text and user_id for the updated post." };
-    const message404 = { error: "The post with the specified ID does not exist." };
-    const message500 = { error: "The post could not be removed" };
+    const message400 = { error: `Please provide text and user_id for post id: ${id}` };
+    const message404 = { error: `Post id: ${id} does not exist` };
+    const message500 = { error: `Post id: ${id} could not be removed` };
 
     if (text === '' || user_id === '') {
         res.status(400).json(message400);

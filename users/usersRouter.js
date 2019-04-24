@@ -63,4 +63,27 @@ usersRouter.delete('/:id', (req, res) => {
         });
 });
 
+usersRouter.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const message400 = { error: `Please provide a valid name for post id: ${id}` };
+    const message404 = { error: `User id: ${id} does not exist` };
+    const message500 = { error: `User id: ${id} could not be removed` };
+
+    if (name === '') {
+        res.status(400).json(message400);
+    }
+    else {
+        Users
+            .update(id, { name })
+            .then(response => {
+                response === 1
+                    ? res.status(200).json(response)
+                    : res.status(404).json(message404)
+            })
+            .catch(error => { res.status(500).json(message500) });
+    }
+});
+
 module.exports = usersRouter;
