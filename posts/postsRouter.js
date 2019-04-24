@@ -1,20 +1,15 @@
 const express = require('express');
 const Posts = require('./postDb');
-const router = express.Router();
+const postsRouter = express.Router();
 
-router.get('/', async (req, res) => {
+postsRouter.get('/', (req, res) => {
+    Posts
+        .get()
+        .then(users => { res.status(200).json(users) })
+        .catch(err => {
+            const message500 = { error: "The users information could not be retrieved." };
+            res.status(500).json(message500);
+        })
 });
 
-router.get('/:id', async (req, res) => {
-});
-
-router.post('/', async (req, res) => {
-});
-
-router.delete('/:id', async (req, res) => {
-});
-
-router.put('/:id', async (req, res) => {
-});
-
-module.exports = router;
+module.exports = postsRouter;
