@@ -30,7 +30,7 @@ postsRouter.get('/:id', (req, res) => {
 
 postsRouter.post('/', (req, res) => {
     const { text, user_id } = req.body;
-    const message400 = { error: "Please provide text for the post." }
+    const message400 = { error: "Please provide text and user_id for the post." }
     const message500 = { error: "There was an error while saving the post to the database" };
 
     if (text && user_id) {
@@ -62,5 +62,27 @@ postsRouter.delete('/:id', (req, res) => {
         });
 });
 
+postsRouter.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const { text, user_id } = req.body;
+
+    const message400 = { error: "Please provide text and user_id for the updated post." };
+    const message404 = { error: "The post with the specified ID does not exist." };
+    const message500 = { error: "The post could not be removed" };
+
+    if (text === '' || user_id === '') {
+        res.status(400).json(message400);
+    }
+    else {
+        Posts
+            .update(id, { text, user_id })
+            .then(response => {
+                response === 1
+                    ? res.status(200).json(response)
+                    : res.status(404).json(message404)
+            })
+            .catch(error => { res.status(500).json(message500) });
+    }
+});
 
 module.exports = postsRouter;
