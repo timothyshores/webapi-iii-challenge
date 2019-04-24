@@ -2,9 +2,10 @@ const express = require('express');
 const Posts = require('./postDb');
 const postsRouter = express.Router();
 
-const message500 = { error: "The posts information could not be retrieved." };
 
 postsRouter.get('/', (req, res) => {
+    const message500 = { error: "The posts information could not be retrieved." };
+
     Posts
         .get()
         .then(posts => { res.status(200).json(posts) })
@@ -20,9 +21,27 @@ postsRouter.get('/:id', (req, res) => {
     Posts
         .getById(req.params.id)
         .then(post => {
-            post ? res.status(200).json(post) : res.status(404).json(message404);
+            post
+                ? res.status(200).json(post)
+                : res.status(404).json(message404);
         })
         .catch(err => { res.status(500).json(message500) })
+});
+
+postsRouter.post('/', (req, res) => {
+    const { text, user_id } = req.body;
+    const message400 = { error: "Please provide text for the post." }
+    const message500 = { error: "There was an error while saving the post to the database" };
+
+    if (text && user_id) {
+        Posts
+            .insert({ text, user_id })
+            .then(post => { res.status(201).json(post) })
+            .catch(err => { res.status(500).json(message500) })
+    }
+    else {
+        res.status(400).json(message400);
+    }
 });
 
 
