@@ -44,5 +44,23 @@ postsRouter.post('/', (req, res) => {
     }
 });
 
+postsRouter.delete('/:id', (req, res) => {
+    const id = req.params.id;
+    const message200 = { message: `Deleted post id: ${id}` };
+    const message404 = { message: `Post id:${id} does not exist.` };
+    const message500 = { error: `Post id:${id} could not be removed` };
+
+    Posts
+        .remove(id)
+        .then(response => {
+            response === 1
+                ? res.status(200).json(message200)
+                : res.status(404).json(message404)
+        })
+        .catch(error => {
+            res.status(500).json(message500);
+        });
+});
+
 
 module.exports = postsRouter;
