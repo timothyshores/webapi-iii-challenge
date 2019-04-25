@@ -18,6 +18,28 @@ server.get('/', (req, res) => {
     `);
 });
 
+server.get('/api/users/:id/posts', (req, res) => {
+    const { id } = req.params;
+    const Posts = require('./posts/postDb');
+
+    const message404 = { error: `User id: ${id} does not have any posts.` }
+    const message500 = { error: `Posts for user ${id} information could not be retrieved.` };
+
+    Posts
+        .get()
+        .then(posts => {
+            const filterPosts = posts.filter(post => post.user_id == id);
+            filterPosts.length > 0
+                ? res.status(200).json(filterPosts)
+                : res.status(404).json(message404)
+
+        })
+        .catch(err => {
+            res.status(500).json(message500);
+        })
+
+});
+
 server.use('/api/users', usersRouter);
 server.use('/api/posts', postsRouter);
 
