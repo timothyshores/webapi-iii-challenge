@@ -37,10 +37,21 @@ server.get('/api/users/:id/posts', (req, res) => {
         .catch(err => {
             res.status(500).json(message500);
         })
-
 });
 
-server.use('/api/users', usersRouter);
+const uppercaseName = (req, res, next) => {
+    if (req.method === 'POST' || req.method === 'PUT') {
+        const firstLetter = req.body.name.charAt(0);
+        const message406 = { error: 'Name needs to begin with a capital letter' };
+        firstLetter === firstLetter.toUpperCase()
+            ? next()
+            : res.status(406).json(message406);
+    } else {
+        next();
+    }
+}
+
+server.use('/api/users', uppercaseName, usersRouter);
 server.use('/api/posts', postsRouter);
 
 module.exports = server;
